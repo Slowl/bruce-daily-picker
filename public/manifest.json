@@ -1,25 +1,25 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
+  "short_name": "Google Meet Picker",
+  "name": "Google Meet Picker",
+  "description": "Don't uninstall me or I'll eat you :wink:",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Pick someone !"
+  },
+  "content_scripts": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["./static/js/content.js"]
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+ ],
+  "icons": {
+    "16": "/img/dice_128.png",
+    "48": "/img/dice_128.png",
+    "128": "/img/dice_128.png"
+  },
+  "permissions": [
+    "activeTab"
+ ]
 }
