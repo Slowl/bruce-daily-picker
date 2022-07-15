@@ -1,15 +1,27 @@
 
 import styled from 'styled-components'
+import { IoCloseOutline } from 'react-icons/io5'
+import { isPickedAnimation } from '../../utils/animation'
 
 const UserCardContainer = styled.div<{ isPicked: boolean }>`
-	border: 2px solid  #4477bb;
-	border-radius: 6px;
 	display: flex;
 	align-items: baseline;
+	position: relative;
 	padding: .3rem .5rem;
+	border: 2px solid  #4477bb;
+	border-radius: 6px;
 	font-size: .95rem;
 	word-spacing: 1px;
-	animation: 3s linear 0s infinite normal none running ${({ isPicked }) => isPicked ? 'IsPicked' : ''};
+	cursor: default;
+	animation: 3s linear 0s infinite normal none running ${({ isPicked }) => isPicked ? isPickedAnimation : ''};
+	transition: .2s;
+
+	:hover {
+		padding-right: 1.7rem;
+		.user-remove {
+			opacity: 1;
+		}
+	}
 
 	.user-picture {
 		width: 18px;
@@ -19,65 +31,41 @@ const UserCardContainer = styled.div<{ isPicked: boolean }>`
 		align-items: center;
 		font-size: .6rem;
 		border-radius: 50%;
-		margin-right: 10px;
 		border: 1px solid #4bc9f5;
 		background-color: #4bc9f5;
 		flex-shrink: 0;
+		transform: translateY(-2px);
 	}
 
-	@keyframes IsPicked {
-		0% {
-			transform: translateX(3px) rotate(1deg);
-			border: 2px solid  #f77070;
-		}
-		2.5% {
-			transform: translateX(-3px) rotate(-1deg);
-			border: 2px solid  #f77070;
+	.user-name {
+		margin: 0 7px;
+	}
 
-		}
-		5% {
-			transform: translateX(3px) rotate(1deg);
-			border: 2px solid  #f77070;
+	.user-remove {
+		position: absolute;
+		right: 5px;
+		opacity: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		padding: 3px;
+		border-radius: 50%;
+		cursor: pointer;
+		transform: translateY(1px);
+		transition: .2s;
 
-		}
-		7.5% {
-			transform: translateX(-3px) rotate(-1deg);
-			border: 2px solid  #f77070;
-		}
-		10% {
-			transform: translateX(2px) rotate(1deg);
-			border: 2px solid  #f77070;
-		}
-		12.5% {
-			transform: translateX(-2px) rotate(-1deg);
-			border: 2px solid  #f77070;
-		}
-		15% {
-			transform: translateX(2px) rotate(1deg);
-			border: 2px solid  #f77070;
-		}
-		17.5% {
-			transform: translateX(-2px) rotate(-1deg);
-			border: 2px solid  #f77070;
-		}
-		20% {
-			transform: translateX(1px) rotate(1deg);
-			border: 2px solid  #f77070;
-		}
-		22.5% {
-			transform: translateX(-1px) rotate(-1deg);
-			border: 2px solid  #f77070;
-		}
-		25% {
-			transform: translateX(0px) rotate(0deg);
-			border: 2px solid  #f77070;
+		:hover {
+			background-color: #f78383;
+
 		}
 	}
 `
 
-const UserCard = ({ isPicked, participant }: {
+const UserCard = ({ isPicked, participant, removeParticipant }: {
 	isPicked: boolean;
 	participant: string | null;
+	removeParticipant: () => void;
 }) => (
 	<UserCardContainer isPicked={isPicked}>
 		<div className='user-picture'>
@@ -85,6 +73,7 @@ const UserCard = ({ isPicked, participant }: {
 			{participant?.split(' ')?.[1]?.split('')?.[0]}
 		</div>
 		<div className='user-name'> {participant} </div>
+		<div className='user-remove' onClick={removeParticipant}> <IoCloseOutline /> </div>
 	</UserCardContainer>
 )
 

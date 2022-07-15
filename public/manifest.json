@@ -2,7 +2,7 @@
   "short_name": "Google Meet Picker",
   "name": "Google Meet Picker",
   "description": "Don't uninstall me or I'll eat you :wink:",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",

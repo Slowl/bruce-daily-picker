@@ -10,7 +10,7 @@ const ButtonContainer = styled.div<{ isResetable: boolean }>`
 	letter-spacing: 1px;
 	font-size: .9rem;
 	border: 2px solid ${({ isResetable }) => isResetable ? '#f77070' : '#4477bb'};
-	border-radius: 10px;
+	border-radius: 20px;
 	color: #fff;
 	background-color: ${({ isResetable }) => isResetable ? '#f77070' : '#4477bb'};
 	cursor: pointer;
