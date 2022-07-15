@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DOMMessage, DOMMessageResponse } from './types'
+import { DOMMessage, DOMMessageResponse, User } from './types'
 import styled from 'styled-components'
 import Button from './components/button'
 import UserCard from './components/userCard'
@@ -56,8 +56,8 @@ const UserCardsContainer = styled.div`
 const App = () => {
 
 	const [host, setHost] = useState('')
-	const [participants, setParticipants] = useState<(string | null)[]>([])
-	const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+	const [participants, setParticipants] = useState<User[]>()
+	const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined)
 
 	useEffect(
 		() => {
@@ -67,7 +67,13 @@ const App = () => {
 					{ type: 'GET_DOM' } as DOMMessage,
 					(response: DOMMessageResponse) => {
 						setHost(response.host)
-						setParticipants(response.participants)
+						setParticipants(response.participants.map(
+							(user: string | null, index): User => ({
+								id: `${Math.random().toString(36).slice(2, 6)}_${(Date.now() + ((index + 1) * (Math.round(Math.random() * 1000)))).toString(36).slice(4, 10)}`,
+								name: user,
+								ratio: parseFloat((Math.random() * 2).toFixed(1)),
+							})
+						))
 					}
 				)
 			})
@@ -75,14 +81,27 @@ const App = () => {
 		[chrome.tabs],
 	)
 
-	const randomPick = (numberOfParticipants: number) => setSelectedIndex(Math.round(Math.random() * (numberOfParticipants - 1)))
+	const newRandomPick = (numberOfParticipants: number) => {
+
+		const rumbledParticipants = participants?.map(
+			(participant, index) => ({
+				...participant,
+				ratio: participant.ratio * (index + 1)
+			})
+		).sort((a, b) => a.ratio - b.ratio)
+
+		setSelectedUser(rumbledParticipants?.[Math.round(Math.random() * (numberOfParticipants - 1))])
+
+	}
+
+	const resetPick = () => setSelectedUser(undefined)
 
 	//#region RENDER
 	return (
 		<AppContainer>
 			<div className='title'> Google Meet Picker </div>
 			<ContentContainer>
-				{host === 'meet.google.com'
+				{host === 'meet.google.com' && participants
 					? (
 						<>
 							<div className='current-participants'>
@@ -93,22 +112,25 @@ const App = () => {
 								{participants.map(
 									(participant, index) => (
 										<UserCard
-											isPicked={selectedIndex === index}
+											isPicked={selectedUser?.id === participant.id}
 											key={index}
-											participant={participant}
+											participant={participant.name}
 										/>
 									)
 								)}
 							</UserCardsContainer>
 
 							<Button
-								isDisabled={selectedIndex !== null}
-								onClickAction={() => randomPick(participants.length)}
+								isResetable={!!(selectedUser)}
+								onClickAction={{
+									reset: () => resetPick(),
+									randomize: () => newRandomPick(participants.length)
+								}}
 							/>
 						</>
 					)
 					: (
-						<div> <a href='https://youtu.be/dQw4w9WgXcQ' target='__blank'> Oh hi there ! Come, click on me :) </a> </div>
+						<div> <a href='https://youtu.be/dQw4w9WgXcQ' target='__blank'> You're are not supposed to open this extension outside of Google Meet 🤔 </a> </div>
 					)
 				}
 			</ContentContainer>

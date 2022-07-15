@@ -75,11 +75,14 @@ const UserCardContainer = styled.div<{ isPicked: boolean }>`
 	}
 `
 
-const UserCard = ({ isPicked, participant }: { isPicked: boolean; participant: string | null; }) => (
+const UserCard = ({ isPicked, participant }: {
+	isPicked: boolean;
+	participant: string | null;
+}) => (
 	<UserCardContainer isPicked={isPicked}>
 		<div className='user-picture'>
-			{participant?.split(' ')[0].split('')[0]}
-			{participant?.split(' ')[1].split('')[0]}
+			{participant?.split(' ')?.[0]?.split('')?.[0]}
+			{participant?.split(' ')?.[1]?.split('')?.[0]}
 		</div>
 		<div className='user-name'> {participant} </div>
 	</UserCardContainer>

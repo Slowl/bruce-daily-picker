@@ -1,7 +1,7 @@
 
 import styled from 'styled-components'
 
-const ButtonContainer = styled.div<{ isDisabled: boolean }>`
+const ButtonContainer = styled.div<{ isResetable: boolean }>`
 	width: 35%;
 	padding: .25rem .4rem .35rem;
 	margin: auto;
@@ -9,25 +9,26 @@ const ButtonContainer = styled.div<{ isDisabled: boolean }>`
 	font-weight: bold;
 	letter-spacing: 1px;
 	font-size: .9rem;
-	border: 2px solid ${({ isDisabled }) => isDisabled ? '#eeeeee' : '#4477bb'};
+	border: 2px solid ${({ isResetable }) => isResetable ? '#f77070' : '#4477bb'};
 	border-radius: 10px;
-	color: ${({ isDisabled }) => isDisabled ? 'grey' : '#fff'};
-	background-color: ${({ isDisabled }) => isDisabled ? '#eeeeee' : '#4477bb'};
-	cursor: ${({ isDisabled }) => isDisabled ? 'not-allowed' : 'pointer'};
+	color: #fff;
+	background-color: ${({ isResetable }) => isResetable ? '#f77070' : '#4477bb'};
+	cursor: pointer;
 	transition: .3s;
+	user-select: none;
 
 	:hover {
-		background-color: ${({ isDisabled }) => isDisabled ? '#eeeeee' : '#5c8dcf'};
-		border: 2px solid ${({ isDisabled }) => isDisabled ? '#eeeeee' : '#5c8dcf'};
+		background-color: ${({ isResetable }) => isResetable ? '#f77070' : '#5c8dcf'};
+		border: 2px solid ${({ isResetable }) => isResetable ? '#f77070' : '#5c8dcf'};
 	}
 `
 
-const Button = ({ isDisabled, onClickAction }: { isDisabled: boolean; onClickAction: () => void; }) => (
+const Button = ({ isResetable, onClickAction }: { isResetable: boolean; onClickAction: { reset: () => void; randomize: () => void } }) => (
 	<ButtonContainer
-		onClick={(event) => isDisabled ? event.preventDefault() : onClickAction()}
-		isDisabled={isDisabled}
+		onClick={() => isResetable ? onClickAction.reset() : onClickAction.randomize()}
+		isResetable={isResetable}
 	>
-		Pick someone
+		{isResetable ? 'Reset your pick' : 'Pick someone'}
 	</ButtonContainer>
 )
 
