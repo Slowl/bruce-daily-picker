@@ -185,7 +185,7 @@ const App = () => {
 						</>
 					)
 					: (
-						<div> <a href='https://youtu.be/dQw4w9WgXcQ' target='__blank'> You're are not supposed to open this extension outside of Google Meet 🤔 </a> </div>
+						<div> <a href='https://youtu.be/dQw4w9WgXcQ' target='__blank'> You are not supposed to open this extension outside of a Google Meet room 🤔 </a> </div>
 					)
 				}
 			</ContentContainer>
