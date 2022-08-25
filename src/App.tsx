@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { FaSyncAlt } from 'react-icons/fa'
+import { AiOutlineVideoCameraAdd } from 'react-icons/ai'
 import { DOMMessage, DOMMessageResponse, User } from './types'
 import styled from 'styled-components'
 import Button from './components/button'
@@ -18,6 +19,7 @@ const AppContainer = styled.div`
 		padding: .5rem .5rem .8rem;
 		text-align: center;
 		background-color: #f2f2f2;
+		color: #4c4c4c;
 	}
 `
 const ContentContainer = styled.div<{ isRestoreButtonVisible: boolean; }>`
@@ -25,9 +27,6 @@ const ContentContainer = styled.div<{ isRestoreButtonVisible: boolean; }>`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;  
-	a {
-		color: blue;
-	}
 	.current-participants {
 		display: flex;
 		align-items: center;
@@ -85,26 +84,30 @@ const App = () => {
 	useEffect(
 		() => {
 
-			chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-			chrome.tabs.sendMessage(
-					tabs[0].id || 0,
-					{ type: 'GET_DOM' } as DOMMessage,
-					(response: DOMMessageResponse) => {
-
-						const participants = response.participants.map(
-							(user: string | null, index): User => ({
-								id: generateId(index),
-								name: user,
-								ratio: parseFloat((Math.random() * 2).toFixed(1)),
-							})
+			if (chrome) {
+				chrome.tabs && chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+					chrome.tabs.sendMessage(
+							tabs[0].id || 0,
+							{ type: 'GET_DOM' } as DOMMessage,
+							(response: DOMMessageResponse) => {
+		
+								const participants = response.participants.map(
+									(user: string | null, index): User => ({
+										id: generateId(index),
+										name: user,
+										ratio: parseFloat((Math.random() * 2).toFixed(1)),
+									})
+								)
+		
+								setHost(response.host)
+								setParticipants(participants)
+								initialParticipants.current = participants
+							}
 						)
-
-						setHost(response.host)
-						setParticipants(participants)
-						initialParticipants.current = participants
-					}
-				)
-			})
+					})
+			} else {
+				console.log('You are not using a Chromium based browser.')
+			}
 		},
 		[chrome.tabs],
 	)
@@ -181,11 +184,15 @@ const App = () => {
 									reset: () => resetPick(),
 									randomize: () => newRandomPick(participants.length)
 								}}
-							/>
+							>
+								{!!(selectedUser) ? 'Reset your pick' : 'Pick someone'}
+							</Button>
 						</>
 					)
 					: (
-						<div> <a href='https://youtu.be/dQw4w9WgXcQ' target='__blank'> You are not supposed to open this extension outside of a Google Meet room 🤔 </a> </div>
+						<Button href='https://meet.google.com/new'>
+							Create a new meeting <AiOutlineVideoCameraAdd />
+						</Button>
 					)
 				}
 			</ContentContainer>
